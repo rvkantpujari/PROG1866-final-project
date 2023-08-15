@@ -7,8 +7,22 @@
             <span class="ml-3 text-3xl">Read<span class="text-blue-600">Wise</span></span>
         </a>
         <nav class="md:ml-auto flex flex-wrap items-center text-base justify-center">
-            <a href="signin.php" class="mr-5 hover:text-gray-900 hover:font-semibold">Sign In</a>
-            <a href="signup.php" class="mr-5 hover:text-gray-900 hover:font-semibold">Sign Up</a>
+            <?php if(isset($_SESSION['loggedIn'])) { ?>
+                <a href="dashboard.php" class="mr-5 hover:text-gray-900 hover:font-semibold">Dashboard</a>
+                <form method="post">
+                    <button name="btnSignOut" class="mr-5 hover:text-gray-900 hover:font-semibold">Sign Out</button>
+                </form>
+            <?php } else { ?>
+                <a href="signin.php" class="mr-5 hover:text-gray-900 hover:font-semibold">Sign In</a>
+                <a href="signup.php" class="mr-5 hover:text-gray-900 hover:font-semibold">Sign Up</a>
+            <?php } ?>
         </nav>
     </div>
 </header>
+
+<?php
+    if(isset($_POST['btnSignOut'])) {
+        session_destroy();
+        echo "<script>window.location.href='index.php';</script>";
+    }
+?>
