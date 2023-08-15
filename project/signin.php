@@ -1,3 +1,37 @@
+<?php
+    include('config/DB_config.php');
+    
+    session_start();
+
+    // Redirect if user logged in
+    if(isset($_SESSION['loggedIn'])) {
+        echo "<script>window.location.href='index.php';</script>";
+    }
+    
+    // If Sign In button is clicked
+    if(isset($_POST['btnSignIn'])) 
+    {
+        // Assign data from POST request
+        $email = $_POST['email'];
+        $password = md5($_POST['password']);
+
+        // Create instance of DB class
+        $db = new DB;
+
+        // Get user data using email id
+        $result = $db->table('users')->select(['user_fname', 'user_lname'])->where(['user_email', 'password'], [$email, $password], ['LIKE', 'LIKE'], 'ss', ['AND']);
+        
+        if($result) {
+            $_SESSION['loggedIn'] = 1;
+            $_SESSION['user'] = str_contains($email, 'admin') ? 'admin' : 'user';
+            $_SESSION['user_fname'] = $result['user_fname'];
+            $_SESSION['user_lname'] = $result['user_lname'];
+            $_SESSION['user_email'] = $email;
+            echo "<script>window.location.href='dashboard.php';</script>";
+        }
+    }
+?>
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -23,15 +57,15 @@
 
                     <form method="post" class="my-8 grid grid-cols-12">
                         <div class="col-span-full mt-4">
-                            <input class="block w-full px-4 py-2 mt-2 text-gray-700 placeholder-gray-500 bg-white border rounded-lg focus:border-blue-400 focus:ring-opacity-40 focus:outline-none focus:ring focus:ring-blue-300" type="email" placeholder="Email Address" aria-label="Email Address" />
+                            <input class="block w-full px-4 py-2 mt-2 text-gray-700 placeholder-gray-500 bg-white border rounded-lg focus:border-blue-400 focus:ring-opacity-40 focus:outline-none focus:ring focus:ring-blue-300" type="email" placeholder="Email Address" name="email" aria-label="Email Address" />
                         </div>
 
                         <div class="col-span-full mt-1">
-                            <input class="block w-full px-4 py-2 mt-2 text-gray-700 placeholder-gray-500 bg-white border rounded-lg focus:border-blue-400 focus:ring-opacity-40 focus:outline-none focus:ring focus:ring-blue-300" type="password" placeholder="Password" aria-label="Password" />
+                            <input class="block w-full px-4 py-2 mt-2 text-gray-700 placeholder-gray-500 bg-white border rounded-lg focus:border-blue-400 focus:ring-opacity-40 focus:outline-none focus:ring focus:ring-blue-300" type="password" placeholder="Password" name="password" aria-label="Password" />
                         </div>
 
                         <div class="col-span-full flex items-center justify-end mt-6">
-                            <button class="px-6 py-2 text-sm font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-500 rounded-lg hover:bg-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-50">
+                            <button name="btnSignIn" class="px-6 py-2 text-sm font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-500 rounded-lg hover:bg-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-50">
                                 Sign In
                             </button>
                         </div>
