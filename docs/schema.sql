@@ -5,17 +5,17 @@ CREATE DATABASE IF NOT EXISTS readwise;
 -- Create users table - It stores users' personal as well as login data
 CREATE TABLE IF NOT EXISTS readwise.users (
     user_email VARCHAR(100) PRIMARY KEY,
-	user_fname VARCHAR(50) NOT NULL,
+    user_fname VARCHAR(50) NOT NULL,
     user_lname VARCHAR(50) NOT NULL,
-    date_of_birth DATE NOT NULL,
+    date_of_birth DATE,
     password VARCHAR(100) NOT NULL
 );
 
 
 -- Create authors table - It stores authors' personal data
 CREATE TABLE IF NOT EXISTS readwise.authors (
-	author_email VARCHAR(100) PRIMARY KEY,
-	author_fname VARCHAR(50) NOT NULL,
+    author_email VARCHAR(100) PRIMARY KEY,
+    author_fname VARCHAR(50) NOT NULL,
     author_lname VARCHAR(50) NOT NULL
 );
 
@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS readwise.publishers (
 
 -- Create books table - It stores Books' data such as ISBN, Title, Description, Edition etc.
 CREATE TABLE IF NOT EXISTS readwise.books (
-	book_isbn INT(13) PRIMARY KEY,
+    book_isbn INT(13) PRIMARY KEY,
     book_title VARCHAR(100) NOT NULL,
     book_desc TEXT,
     book_edition VARCHAR(50),
@@ -43,7 +43,7 @@ CREATE TABLE IF NOT EXISTS readwise.books (
 
 -- Create read table - It stores when a user started reading book from given list of books
 CREATE TABLE IF NOT EXISTS readwise.read(
-	book_isbn INT(13) NOT NULL,
+    book_isbn INT(13) NOT NULL,
     user_email VARCHAR(100) NOT NULL,
     read_on DATE NOT NULL DEFAULT NOW(),
     FOREIGN KEY (book_isbn) REFERENCES readwise.books (book_isbn) ON UPDATE CASCADE ON DELETE RESTRICT,
