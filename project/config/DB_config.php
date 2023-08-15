@@ -48,9 +48,21 @@
 
         // To set table name
         function table($table) {
+            // Set private property 'table'
             $this->table = $table;
+
             // empty private properties
-            $this->VALS = []; $this->COLSTYPE = '';
+            $this->VALS = []; $this->COLSTYPE = ''; $this->sqlQuery = '';
+            
+            // Assuming it's a SELECT query
+            $this->sqlQuery = "SELECT * FROM $this->table";
+
+            return $this;
+        }
+
+        // To INNER JOIN two tables 
+        function join($jtable, $col1, $col2) {
+            $this->sqlQuery .= " INNER JOIN $jtable ON $col1 = $col2";
             return $this;
         }
 
@@ -65,14 +77,19 @@
         function selectAll() {
             // reset dataset array
             $this->dataset = array();
-            // Select ALL Query
-            $this->sqlQuery = "SELECT * FROM $this->table";
+
+            // Check if there is a JOIN or not
+            if(empty($this->sqlQuery))
+                $this->sqlQuery = "SELECT * FROM $this->table"; // Select ALL Query
+            
             // Execute Query
             $results = mysqli_query($this->dbc, $this->sqlQuery);
+
             // Fetch and Assign Row from Results one by one
             while($row = mysqli_fetch_array($results, MYSQLI_ASSOC)) {
                 array_push($this->dataset, $row);
             }
+
             // Return dataset
             return $this -> dataset;
         }
