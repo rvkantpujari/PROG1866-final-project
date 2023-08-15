@@ -21,7 +21,7 @@
         if($result) {
             $_SESSION['loggedIn'] = 1;
             $_SESSION['user'] = str_contains($email, 'admin') ? 'admin' : 'user';
-            $_SESSION['email'] = $email;
+            $_SESSION['user_email'] = $email;
             echo "<script>window.location.href='dashboard.php';</script>";
         }
     }
