@@ -68,8 +68,18 @@
 
         // To select all or specified columns
         function select($select = ['*']) {
+            // Set select property
             $this->select = $select;
+            
+            // Set query type
             $this->queryType = "select";
+
+            // split values by , (comma)
+            $this->select = implode(", ", $this->select);
+
+            // Prepare SELECT statement
+            $this->sqlQuery = "SELECT $this->select FROM $this->table";
+
             return $this;
         }
 
@@ -167,9 +177,21 @@
             return $this;
         }
 
-        // To execute UPDATE/DELETE query
+        // To execute SELECT/UPDATE/DELETE query
         function execute() {
-            if($this->queryType === "update") {
+            if($this->queryType === "select") {
+                // Execute Query
+                $results = mysqli_query($this->dbc, $this->sqlQuery);
+
+                // Fetch and Assign Row from Results one by one
+                while($row = mysqli_fetch_array($results, MYSQLI_ASSOC)) {
+                    array_push($this->dataset, $row);
+                }
+
+                // return dataset
+                return $this->dataset;
+            }
+            else if($this->queryType === "update") {
                 // prepare query and bind parameters
                 $stmt = mysqli_prepare($this->dbc, $this->sqlQuery);
                 $stmt->bind_param($this->COLSTYPE, ...$this->VALS);
@@ -208,20 +230,8 @@
                     $colsType[$i] === 's' ? array_push($this->VALS, "%".$this->prepare_string($vals[$i])."%") : array_push($this->VALS, $vals[$i]);
                 }
                 
-                if($this->queryType === "select") {
-                    // split values by , (comma)
-                    $this->select = implode(", ", $this->select);
-                    // SELECT query
-                    $this->sqlQuery = "SELECT $this->select FROM $this->table WHERE $whereClause";
-                }
-                else if($this->queryType === "update") {
-                    // UPDATE query
-                    $this->sqlQuery .= " WHERE $whereClause";
-                }
-                else if($this->queryType === "delete") {
-                    // UPDATE query
-                    $this->sqlQuery .= " WHERE $whereClause";
-                }
+                // Add WHERE clause
+                $this->sqlQuery .= " WHERE $whereClause";
 
                 // prepare query and bind parameters
                 $stmt = mysqli_prepare($this->dbc, $this->sqlQuery);
