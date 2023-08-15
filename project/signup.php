@@ -1,3 +1,32 @@
+<?php
+    include('config/DB_config.php');
+    
+    session_start();
+    
+    // If Sign Up button is clicked
+    if(isset($_POST['btnSignUp'])) 
+    {
+        // Assign data from POST request
+        $fname = $_POST['first_name'];
+        $lname = $_POST['last_name'];
+        $email = $_POST['email'];
+        $password = md5($_POST['password']);
+
+        // Create instance of DB class
+        $db = new DB;
+
+        // Insert user data in order to create new account
+        $result = $db->table('users')->insert(['user_fname', 'user_lname', 'user_email', 'password'], array($fname, $lname, $email, $password), 'ssss');
+        
+        if($result) {
+            $_SESSION['loggedIn'] = 1;
+            $_SESSION['user'] = str_contains($email, 'admin') ? 'admin' : 'user';
+            $_SESSION['email'] = $email;
+            echo "<script>window.location.href='dashboard.php';</script>";
+        }
+    }
+?>
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -23,23 +52,23 @@
 
                     <form method="post" class="my-8 grid grid-cols-12 gap-x-2">
                         <div class="col-span-full md:col-span-6">
-                            <input class="block w-full px-4 py-2 mt-2 text-gray-700 placeholder-gray-500 bg-white border rounded-lg focus:border-blue-400 focus:ring-opacity-40 focus:outline-none focus:ring focus:ring-blue-300" type="text" placeholder="First Name" />
+                            <input class="block w-full px-4 py-2 mt-2 text-gray-700 placeholder-gray-500 bg-white border rounded-lg focus:border-blue-400 focus:ring-opacity-40 focus:outline-none focus:ring focus:ring-blue-300" type="text" name="first_name" placeholder="First Name" />
                         </div>
                         
                         <div class="col-span-full md:col-span-6">
-                            <input class="block w-full px-4 py-2 mt-2 text-gray-700 placeholder-gray-500 bg-white border rounded-lg focus:border-blue-400 focus:ring-opacity-40 focus:outline-none focus:ring focus:ring-blue-300" type="text" placeholder="Last Name" />
+                            <input class="block w-full px-4 py-2 mt-2 text-gray-700 placeholder-gray-500 bg-white border rounded-lg focus:border-blue-400 focus:ring-opacity-40 focus:outline-none focus:ring focus:ring-blue-300" type="text" name="last_name" placeholder="Last Name" />
                         </div>
 
                         <div class="col-span-full mt-1">
-                            <input class="block w-full px-4 py-2 mt-2 text-gray-700 placeholder-gray-500 bg-white border rounded-lg focus:border-blue-400 focus:ring-opacity-40 focus:outline-none focus:ring focus:ring-blue-300" type="email" placeholder="Email Address" />
+                            <input class="block w-full px-4 py-2 mt-2 text-gray-700 placeholder-gray-500 bg-white border rounded-lg focus:border-blue-400 focus:ring-opacity-40 focus:outline-none focus:ring focus:ring-blue-300" type="email" name="email" placeholder="Email Address" />
                         </div>
 
                         <div class="col-span-full mt-1">
-                            <input class="block w-full px-4 py-2 mt-2 text-gray-700 placeholder-gray-500 bg-white border rounded-lg focus:border-blue-400 focus:ring-opacity-40 focus:outline-none focus:ring focus:ring-blue-300" type="password" placeholder="Password" />
+                            <input class="block w-full px-4 py-2 mt-2 text-gray-700 placeholder-gray-500 bg-white border rounded-lg focus:border-blue-400 focus:ring-opacity-40 focus:outline-none focus:ring focus:ring-blue-300" type="password" name="password" placeholder="Password" />
                         </div>
 
                         <div class="col-span-full flex items-center justify-end mt-6">
-                            <button class="px-6 py-2 text-sm font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-500 rounded-lg hover:bg-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-50">
+                            <button name="btnSignUp" class="px-6 py-2 text-sm font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-500 rounded-lg hover:bg-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-50">
                                 Sign Up
                             </button>
                         </div>
