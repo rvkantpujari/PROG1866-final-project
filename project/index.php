@@ -1,3 +1,6 @@
+<?php
+    session_start();
+?>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -8,7 +11,7 @@
     </head>
     <body class="h-screen">
         <!-- Header/Navbar -->
-        <section class="h-[10vh] bg-red-300"><?php require ('layout/header.php'); ?></section>
+        <section class="h-[10vh]"><?php require ('layout/header.php'); ?></section>
         <!-- Main Section -->
         <section class="h-[80vh] w-full space-4 px-8 py-12 bg-white">
             <form class="flex items-center h-full justify-center px-4 md:px-12">
