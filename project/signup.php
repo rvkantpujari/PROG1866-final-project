@@ -2,6 +2,11 @@
     include('config/DB_config.php');
     
     session_start();
+
+    // Redirect if user logged in
+    if(isset($_SESSION['loggedIn'])) {
+        echo "<script>window.location.href='index.php';</script>";
+    }
     
     // If Sign Up button is clicked
     if(isset($_POST['btnSignUp'])) 
