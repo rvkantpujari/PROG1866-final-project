@@ -51,6 +51,9 @@
             // Set private property 'table'
             $this->table = $table;
 
+            // Set query type
+            $this->queryType = "select";
+            
             // empty private properties
             $this->VALS = []; $this->COLSTYPE = ''; $this->sqlQuery = '';
             
