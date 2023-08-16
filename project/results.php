@@ -1,12 +1,16 @@
 <?php
+    include('config/DB_config.php');
+
     session_start();
+
+    $db = new DB;
 
     $keyword = '';
     $books = array();
 
     if (isset($_GET['keyword'])) {
       $keyword = htmlspecialchars($_GET['keyword']);
-      $books = $db->table("books")->select()->where(['book_title'], [$keyword], ['IN'], 's');
+      $books = $db->table("books")->join('authors', 'books.book_author' ,'authors.author_email')->where(['book_title'], [$keyword], ['LIKE'], 's');
     } else {
       echo "No keyword found";
       return;
@@ -33,7 +37,7 @@
                 <div class="xl:w-1/4 md:w-1/2 p-4">
                   <div class="bg-gray-100 p-6 rounded-lg">
                     <img class="h-40 rounded w-full object-fit object-center mb-6" src="https://upload.wikimedia.org/wikipedia/commons/9/92/Open_book_nae_02.svg" alt="content">
-                    <h3 class="tracking-widest text-indigo-500 text-xs font-medium title-font"><?php echo htmlspecialchars($book['book_author']); ?></h3>
+                    <h3 class="tracking-widest text-indigo-500 text-xs font-medium title-font"><?php echo htmlspecialchars($book['author_fname'] .' '. $book['author_lname']); ?></h3>
                     <h2 class="text-lg text-gray-900 font-medium title-font mb-4"><?php echo htmlspecialchars($book['book_title']); ?></h2>
                     <p>Edition: <?php echo htmlspecialchars($book['book_edition']); ?></p>
                     <p class="leading-relaxed text-base"><?php echo htmlspecialchars($book['book_desc']); ?></p>
